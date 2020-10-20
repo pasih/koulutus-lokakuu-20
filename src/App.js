@@ -17,12 +17,20 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState();
+  const [error, setError] = useState()
 
   useEffect(() => {
-    getPosts().then(loadedPosts => {
-      setPosts(loadedPosts);
-      setLoading(false)
-    })
+    async function retrieve() {
+      try {
+        const loadedPosts = await getPosts();
+        setPosts(loadedPosts)
+        setLoading(false)
+      } catch (e) {
+        setError(e.message)
+      }
+    }
+
+    retrieve();
   }, [])
   
   function postPicked(post) {
@@ -35,7 +43,7 @@ function App() {
       onPostPicked={postPicked}
       loading={loading}
       posts={posts} />
-     <SinglePost selectedPost={selectedPost} />
+     <SinglePost key={selectedPost?.id} selectedPost={selectedPost} />
     </div>
   );
 }
