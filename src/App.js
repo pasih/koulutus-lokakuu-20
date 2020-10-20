@@ -3,6 +3,8 @@ import "octo-sample-api/styles.css"
 
 import { getPosts } from "octo-sample-api"
 import React, { useEffect, useState } from 'react';
+import { PostList } from './Components/PostList'
+import { SinglePost } from './Components/SinglePost'
 
 /*
 body: "quia et suscipit↵suscipit recusandae consequuntur expedita et cum↵reprehenderit molestiae ut ut quas totam↵nostrum rerum est autem sunt rem eveniet architecto"
@@ -13,7 +15,8 @@ userId: 1
 */
 function App() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [selectedPost, setSelectedPost] = useState();
 
   useEffect(() => {
     getPosts().then(loadedPosts => {
@@ -22,20 +25,17 @@ function App() {
     })
   }, [])
   
-  // if (loading) {
-  //   return <div>Ladataan</div>
-  // }
+  function postPicked(post) {
+    setSelectedPost(post)
+  }
 
   return (
     <div className="posts-app">
-      <div className="post-list">
-        {loading ? "Ladataan.." : 
-        <ul>
-          {posts.map(post => <li key={post.id}>
-            {post.title}
-          </li>)}
-        </ul>}
-      </div>
+     <PostList
+      onPostPicked={postPicked}
+      loading={loading}
+      posts={posts} />
+     <SinglePost selectedPost={selectedPost} />
     </div>
   );
 }
